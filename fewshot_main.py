@@ -57,7 +57,7 @@ def main():
         feature_encoder_optim.step()
         relation_network_optim.step()
 
-        if (episode + 1) % 100 == 0:
+        if (episode + 1) % 1000 == 0:
             print("episode:", episode + 1, "loss", loss, "耗时", time() - t0)
             t0 = time()
 
