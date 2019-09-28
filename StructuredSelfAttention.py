@@ -58,7 +58,8 @@ class StructuredSelfAttention(torch.nn.Module):
     def forward(self, x):  # batch_size*max_len
         x = x.to(device)
         embeddings = self.embeddings(x)  # batch_size*max_len*emb_dim
-        # return embeddings.sum(1)  #batch*emb_dim
+        return embeddings.sum(1)  #batch*emb_dim
+
         outputs, _ = self.lstm(embeddings)  # batch_size*max_len*emb_dim  #10*256
         # outputs batch_size*max_len*lstm_hid_dim
         # x = F.tanh(self.linear_first(self.dropout(outputs)))  # batch_size*max_len*d_a

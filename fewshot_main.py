@@ -18,7 +18,7 @@ def main():
         "EPISODE":1000000, #1000000
         "TEST_EPISODE":1000, #1000
         "LEARNING_RATE":0.0001, #0.01
-        "FEATURE_DIM":128,
+        "FEATURE_DIM":300,
         "RELATION_DIM":8,
         "max_len":12,
         "emb_dim": 300,
