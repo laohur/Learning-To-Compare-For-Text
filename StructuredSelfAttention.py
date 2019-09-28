@@ -18,10 +18,10 @@ class StructuredSelfAttention(torch.nn.Module):
         use_pretrained_embeddings = config["use_pretrained_embeddings"]
         super(StructuredSelfAttention, self).__init__()
         self.embeddings = self._load_embeddings(config,use_pretrained_embeddings, vocab_size, 300)
-        # self.embeddings.requires_grad = False
+        self.embeddings.requires_grad = False
         self.lstm = torch.nn.LSTM(config["emb_dim"], config["lstm_hid_dim"], batch_first=True, bidirectional=True)
         self.linear_first = torch.nn.Linear(config["lstm_hid_dim"]* 2, config["d_a"])
-        self.r=config["r"]
+        self.r=config["r"]  #=1 只取句向量
         self.linear_second = torch.nn.Linear(config["d_a"], self.r)
         self.dropout = torch.nn.Dropout(0.1)
 
@@ -58,17 +58,17 @@ class StructuredSelfAttention(torch.nn.Module):
     def forward(self, x):  # batch_size*max_len
         x = x.to(device)
         embeddings = self.embeddings(x)  # batch_size*max_len*emb_dim
-        return embeddings.sum(1)  #batch*emb_dim
+        # return embeddings.sum(1)  #batch*emb_dim
         outputs, _ = self.lstm(embeddings)  # batch_size*max_len*emb_dim  #10*256
         # outputs batch_size*max_len*lstm_hid_dim
         # x = F.tanh(self.linear_first(self.dropout(outputs)))  # batch_size*max_len*d_a
         x = F.tanh(self.linear_first(outputs))  # batch_size*max_len*d_a
         x = self.linear_second(x)  # batch_size*max_len*r
-        x = self.softmax(x, 1) #batch*seq*64
-
+        # x = self.softmax(x, 1) #batch*seq*64
+        x=F.softmax(x,dim=1)
         attention = x.transpose(1, 2)  # batch_size*r*max_len
         sentence_embeddings = attention @ outputs  # batch_size*r*lstm_hid_dim
-        avg_sentence_embeddings = torch.sum(sentence_embeddings, 1) / self.r # batch_size*lstm_hid_dim
+        avg_sentence_embeddings = torch.sum(sentence_embeddings, 1) / self.r # batch_size*lstm_hid_dim  # 不如让r=1
         # return F.log_softmax(avg_sentence_embeddings)
         return avg_sentence_embeddings  #batch*128
 

@@ -49,7 +49,7 @@ class RelationNetwork(nn.Module):
 
     def __init__(self, input_size, hidden_size):
         super(RelationNetwork, self).__init__()
-        self.fc1 = nn.Linear(input_size * 2, hidden_size)
+        self.fc1 = nn.Linear(input_size, hidden_size)
         self.fc2 = nn.Linear(hidden_size, 1)
 
     def forward(self, a, b):  # 475*100  #valid 25*100

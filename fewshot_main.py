@@ -18,13 +18,13 @@ def main():
         "EPISODE":1000000, #1000000
         "TEST_EPISODE":1000, #1000
         "LEARNING_RATE":0.0001, #0.01
-        "FEATURE_DIM":300,
+        "FEATURE_DIM":128,
         "RELATION_DIM":8,
         "max_len":12,
         "emb_dim": 300,
         "lstm_hid_dim": 64,
         "d_a": 64,
-        "r": 16,
+        "r": 1,
         "max_len": 10,
         "n_classes": 5,
         "num_layers": 1,
@@ -35,7 +35,7 @@ def main():
         "vocab_size": len(word2index)
     }
     feature_encoder = StructuredSelfAttention(config).to(device)
-    relation_network = RelationNetwork(config["FEATURE_DIM"], config["RELATION_DIM"]).to(device)
+    relation_network = RelationNetwork(2*config["FEATURE_DIM"], config["RELATION_DIM"]).to(device)
 
     feature_encoder_optim = torch.optim.Adam(feature_encoder.parameters(), lr=config["LEARNING_RATE"])
     feature_encoder_scheduler = StepLR(feature_encoder_optim, step_size=100000, gamma=0.5)
