@@ -6,44 +6,6 @@ import math
 
 dtype = torch.FloatTensor
 
-
-class CNNEncoder(nn.Module):
-    """docstring for ClassName"""
-
-    def __init__(self, vocab_size, embed_dim, weights):
-        super(CNNEncoder, self).__init__()
-        # self.embedding = nn.Embedding(vocab_size, embed_dim)
-        self.embedding = nn.Embedding(vocab_size, embed_dim).from_pretrained(weights)
-        self.layer1 = nn.Sequential(
-            nn.Conv2d(1, 64, kernel_size=3, padding=0),
-            nn.BatchNorm2d(64, momentum=1, affine=True),
-            nn.ReLU(),
-            nn.MaxPool2d(2))
-        self.layer2 = nn.Sequential(
-            nn.Conv2d(64, 64, kernel_size=3, padding=0),
-            nn.BatchNorm2d(64, momentum=1, affine=True),
-            nn.ReLU(),
-            nn.MaxPool2d(2))
-        self.layer3 = nn.Sequential(
-            nn.Conv2d(64, 64, kernel_size=3, padding=1),
-            nn.BatchNorm2d(64, momentum=1, affine=True),
-            nn.ReLU())
-        self.layer4 = nn.Sequential(
-            nn.Conv2d(64, 64, kernel_size=3, padding=1),
-            nn.BatchNorm2d(64, momentum=1, affine=True),
-            nn.ReLU())
-
-    def forward(self, x):
-        x = self.embedding(x)  # support:5*1*28*28 batch:95*1*28*28  ->5*1*28*300
-        out = self.layer1(x)  # 5*64*13*13  #5*64*13*129
-        out = self.layer2(out)  # 5*64*5*5
-        out = self.layer3(out)  # 5*64*5*5
-        out = self.layer4(out)  # 5*64*5*5
-        # out = x
-        out = out.view(out.size(0), -1)
-        return out  # 64？  #5*8400
-
-
 class RelationNetwork(nn.Module):
     """docstring for RelationNetwork"""
 
@@ -53,28 +15,16 @@ class RelationNetwork(nn.Module):
         self.fc2 = nn.Linear(hidden_size, 1)
 
     def forward(self, a, b):  # 475*100  #valid 25*100
-        x = torch.cat((a, b), 2)
+
         n_examples = a.size()[0] * a.size()[1]
-        x = x.view(n_examples, -1)
+        a = a.reshape(n_examples, -1)
+        b = b.reshape(n_examples, -1)
+        cosine = F.cosine_similarity(a, b)
+        return cosine
+        x = torch.cat((a, b), 1)
         x = F.relu(self.fc1(x))  # hiddensize->hiddensize
         x = F.sigmoid(self.fc2(x))  # hiddensize->scale
         return x
-
-def weights_init(m):
-    classname = m.__class__.__name__
-    if classname.find('Conv') != -1:
-        n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-        m.weight.data.normal_(0, math.sqrt(2. / n))
-        if m.bias is not None:
-            m.bias.data.zero_()
-    elif classname.find('BatchNorm') != -1:
-        m.weight.data.fill_(1)
-        m.bias.data.zero_()
-    elif classname.find('Linear') != -1:
-        n = m.weight.size(1)
-        # m.weight.data.normal_(0, 0.01)
-        m.weight.data.normal_(0, 0.01)
-        m.bias.data = torch.ones(m.bias.data.size())
 
 class TextCNN(nn.Module):
     def __init__(self, vocab_size, embed_dim, n_filters, filter_sizes, hidden_size,
