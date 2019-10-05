@@ -1,4 +1,6 @@
 import torch
+
+from WaveLR import WaveLR
 from models import RelationNetwork
 from time import time
 from torch.optim.lr_scheduler import StepLR
@@ -18,7 +20,7 @@ def main():
         "EPISODE": 10000,  # 1000000
         "TEST_EPISODE": 100,  # 1000
         "LEARNING_RATE": 0.0001,  # 0.01
-        "FEATURE_DIM": 256,  #lstm_hid_dim *2
+        "FEATURE_DIM": 256,  # lstm_hid_dim *2
         "RELATION_DIM": 8,
         "use_bert": False,
         "max_len": 12,
@@ -37,14 +39,12 @@ def main():
     feature_encoder = StructuredSelfAttention(config).to(device)
     relation_network = RelationNetwork(2 * config["FEATURE_DIM"], config["RELATION_DIM"]).to(device)
 
-    feature_encoder_optim = torch.optim.Adam(feature_encoder.parameters(), lr=config["LEARNING_RATE"],weight_decay=1e-4)
+    feature_encoder_optim = torch.optim.Adam(feature_encoder.parameters(), lr=config["LEARNING_RATE"], weight_decay=1e-4)
     feature_encoder_scheduler = StepLR(feature_encoder_optim, step_size=100000, gamma=0.5)
-    relation_network_optim = torch.optim.Adam(relation_network.parameters(), lr=config["LEARNING_RATE"],weight_decay=1e-4)
+    relation_network_optim = torch.optim.Adam(relation_network.parameters(), lr=config["LEARNING_RATE"], weight_decay=1e-4)
     relation_network_scheduler = StepLR(relation_network_optim, step_size=100000, gamma=0.5)
-
     print("开始训练")
     t0 = time()
-    last_accuracy = 0.0
 
     for episode in range(config["EPISODE"]):
         feature_encoder.train()

@@ -67,7 +67,7 @@ class StructuredSelfAttention(torch.nn.Module):
         outputs, _ = self.lstm(embeddings)  # batch_size*max_len*emb_dim  #10*256
         # outputs batch_size*max_len*lstm_hid_dim
         # x = F.tanh(self.linear_first(self.dropout(outputs)))  # batch_size*max_len*d_a
-        x = F.tanh(self.linear_first(outputs))  # batch_size*max_len*d_a
+        x = torch.tanh(self.linear_first(outputs))  # batch_size*max_len*d_a
         x = self.linear_second(x)  # batch_size*max_len*r
         # x = self.softmax(x, 1) #batch*seq*64
         x = F.softmax(x, dim=1)

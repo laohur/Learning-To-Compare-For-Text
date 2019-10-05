@@ -35,33 +35,31 @@ def train(feature_encoder, relation_network, train_data, config):
     mse = nn.MSELoss().to(device)
     batch_labels = batch_labels.long()
     one_hot_labels = torch.zeros(config["BATCH_NUM_PER_CLASS"] * config["CLASS_NUM"], config["CLASS_NUM"])
-    one_hot_labels = one_hot_labels.scatter_(1,batch_labels.view(-1,1),1)
+    one_hot_labels = one_hot_labels.scatter_(1, batch_labels.view(-1, 1), 1)
     one_hot_labels = Variable(one_hot_labels).to(device)
 
     loss = mse(relations, one_hot_labels)
     feature_encoder.zero_grad()
     relation_network.zero_grad()
     loss.backward()
-    torch.nn.utils.clip_grad_norm(feature_encoder.parameters(), 0.5)
-    torch.nn.utils.clip_grad_norm(relation_network.parameters(), 0.5)
+    torch.nn.utils.clip_grad_norm_(feature_encoder.parameters(), 0.5)
+    torch.nn.utils.clip_grad_norm_(relation_network.parameters(), 0.5)
 
     return loss.item()
 
 
 def valid(feature_encoder, relation_network, test_data, config):
     # test
-    # feature_encoder.eval()
-    # relation_network.eval()
+    feature_encoder.eval()
+    relation_network.eval()
 
     total_rewards = 0
 
     for i in range(config["TEST_EPISODE"]):  # 训练测试 集合数量不同
         task = OmniglotTask(test_data, config["CLASS_NUM"], config["SAMPLE_NUM_PER_CLASS"],
                             config["BATCH_NUM_PER_CLASS"])
-        sample_dataloader = get_data_loader(task, config, num_per_class=config["SAMPLE_NUM_PER_CLASS"], split="train",
-                                            shuffle=False)
-        test_dataloader = get_data_loader(task, config, num_per_class=config["SAMPLE_NUM_PER_CLASS"], split="test",
-                                          shuffle=True)
+        sample_dataloader = get_data_loader(task, config, num_per_class=config["SAMPLE_NUM_PER_CLASS"], split="train", shuffle=False)
+        test_dataloader = get_data_loader(task, config, num_per_class=config["SAMPLE_NUM_PER_CLASS"], split="test", shuffle=True)
 
         sample_images, sample_labels = sample_dataloader.__iter__().next()
         test_images, test_labels = test_dataloader.__iter__().next()

@@ -10,7 +10,7 @@ implement "StructuredSelfAttention" + "RelationNetwork" for few shot learning of
 ## performance
     10000 step 300dim    
     embeeding +cosine  0.54   
-    embedding+ attn + cosine 0.65
+    embedding+ attn + cosine 0.65 (bilstm>lstm)
     embedding+ attn + concat not converge
     bert+ attn + concat not converge
     bert +attn+ cosine 0.25

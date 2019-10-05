@@ -7,8 +7,6 @@ from functools import partial
 
 from torch.optim.lr_scheduler import _LRScheduler
 
-from .optimizer import Optimizer
-
 
 class WaveLR(_LRScheduler):
 
@@ -28,9 +26,15 @@ class WaveLR(_LRScheduler):
             self.base_lr *= self.down_rate
             self.calm_count = 0
             return self.base_lr
-        else:
-            self.disinflation_count += 1
-            if self.disinflation_count > self.disinflation_max:
-                self.base_lr *= self.up_rate
+        # else:
+        #     if d_loss/self.last_loss >0.5:
+        #         self.disinflation_count += 1
+        #     if self.disinflation_count > self.disinflation_max:
+        #         self.base_lr *= self.up_rate
 
         return self.base_lr
+
+    def step(self, loss):
+        self.get_lr(loss)
+        for param_group in self.optimizer.param_groups:
+            param_group['lr'] = self.base_lr
