@@ -95,8 +95,8 @@ def get_index2word(word2index):
     return index2word
 
 
-def sentence2indices(line, word2index, max_len=None, padding_index=None, unk=Constants.UNK, began=None, end=None):
-    result = [word2index.get(word, unk) for word in line]
+def sentence2indices(line, word2index, max_len=None, padding_index=None, unk=None, began=None, end=None):
+    result = [word2index.get(word, unk) for word in line if word in word2index ]
     if max_len is not None:
         result = result[:max_len]
     if began is not None:
@@ -105,6 +105,8 @@ def sentence2indices(line, word2index, max_len=None, padding_index=None, unk=Con
         result.append(end)
     if padding_index is not None and len(result) < max_len:
         result += [padding_index] * (max_len - len(result))
+    if not result:
+        a=0
     # assert len(result) == max_len
     return result
 

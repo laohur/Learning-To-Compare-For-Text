@@ -20,15 +20,15 @@ def omniglot_character_folders():
     random.shuffle(doc)
 
     counter = count_doc(doc)
-    word2index, index2word = counter2dict(counter=counter, min_freq=3)
+    word2index, index2word = counter2dict(counter=counter, min_freq=2)
     print(word2index, index2word)
     dict_data = {}
     for line in doc:
-        tokens = line.split("\t")
-        if len(tokens) != 2:
+        words = line.split("\t")
+        if len(words) != 2:
             print(line)
             continue
-        y, x = tokens[0], tokens[1]
+        y, x = words[0], words[1]
         if y in dict_data:
             dict_data[y].append(x)
         else:
