@@ -16,3 +16,4 @@ prev_trained_model
 .idea/CLUE.iml
 .idea/misc.iml
 __pycache__
+idea/
