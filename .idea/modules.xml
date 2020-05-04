@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/LearnToCompareText.iml" filepath="$PROJECT_DIR$/.idea/LearnToCompareText.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/RelationNet.iml" filepath="$PROJECT_DIR$/.idea/RelationNet.iml" />
     </modules>
   </component>
 </project>
