@@ -12,9 +12,8 @@ from torch.utils.data.sampler import Sampler
 import Constants
 from Util import count_doc, counter2dict, load_weights, sentence2indices
 
-
-def omniglot_character_folders():
-    path = "data/toutiao.txt"
+# omniglot_character_folders
+def get_data(path = "data/toutiao.txt"):
     doc = open(path, "r", encoding="utf-8").read().splitlines()
     random.seed(1)
     random.shuffle(doc)
@@ -36,6 +35,9 @@ def omniglot_character_folders():
     keys = list(dict_data.keys())
     # labels = {key: i for i, key in keys}
     labels = {}
+    print()
+    for k,v in dict_data.items():
+        print('类别',k,'样本数量',len(v), "平均长度", sum([ len(line) for line in v ])/len(v) )
     print("标签类别数量", len(labels))
     test_classes = random.sample(keys, int(len(keys) * 0.2))
     tst_data = {}
@@ -45,7 +47,7 @@ def omniglot_character_folders():
     return dict_data, tst_data, word2index, labels
 
 
-class OmniglotTask(object):
+class ClassifyTask(object):
     # This class is for task generation for both meta training and meta testing.
     # For meta training, we use all 20 samples without valid set (empty here).
     # For meta testing, we use 1 or 5 shot samples for training, while using the same number of samples for validation.

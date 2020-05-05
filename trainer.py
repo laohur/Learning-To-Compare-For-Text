@@ -5,11 +5,13 @@ from torch.autograd import Variable
 import numpy as np
 
 from Util import few_data, device
-from task_generator import OmniglotTask, get_data_loader
+from task_generator import ClassifyTask, get_data_loader
 
 
 def train(feature_encoder, relation_network, train_data, config):
-    task = OmniglotTask(train_data, config["CLASS_NUM"], config["SAMPLE_NUM_PER_CLASS"], config["BATCH_NUM_PER_CLASS"])
+    feature_encoder.train()
+    relation_network.train()
+    task = ClassifyTask(train_data, config["CLASS_NUM"], config["SAMPLE_NUM_PER_CLASS"], config["BATCH_NUM_PER_CLASS"])
     sample_dataloader = get_data_loader(task, config, num_per_class=config["SAMPLE_NUM_PER_CLASS"], split="train",
                                         shuffle=False)
     batch_dataloader = get_data_loader(task, config, num_per_class=config["BATCH_NUM_PER_CLASS"], split="test",
@@ -42,8 +44,8 @@ def train(feature_encoder, relation_network, train_data, config):
     feature_encoder.zero_grad()
     relation_network.zero_grad()
     loss.backward()
-    torch.nn.utils.clip_grad_norm_(feature_encoder.parameters(), 0.5)
-    torch.nn.utils.clip_grad_norm_(relation_network.parameters(), 0.5)
+    # torch.nn.utils.clip_grad_norm_(feature_encoder.parameters(), 0.5)
+    # torch.nn.utils.clip_grad_norm_(relation_network.parameters(), 0.5)
 
     return loss.item()
 
@@ -56,7 +58,7 @@ def valid(feature_encoder, relation_network, test_data, config):
     total_rewards = 0
 
     for i in range(config["TEST_EPISODE"]):  # 训练测试 集合数量不同
-        task = OmniglotTask(test_data, config["CLASS_NUM"], config["SAMPLE_NUM_PER_CLASS"],
+        task = ClassifyTask(test_data, config["CLASS_NUM"], config["SAMPLE_NUM_PER_CLASS"],
                             config["BATCH_NUM_PER_CLASS"])
         sample_dataloader = get_data_loader(task, config, num_per_class=config["SAMPLE_NUM_PER_CLASS"], split="train", shuffle=False)
         test_dataloader = get_data_loader(task, config, num_per_class=config["SAMPLE_NUM_PER_CLASS"], split="test", shuffle=True)

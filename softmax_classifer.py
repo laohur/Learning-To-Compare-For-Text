@@ -10,12 +10,12 @@ import sys
 import torch
 import json
 from Util import *
-from models import *
+from Comparator import *
 from time import time
 from torch.optim.lr_scheduler import StepLR
 from torch.autograd import Variable
 import numpy as np
-from StructuredSelfAttention import *
+from Encoder import *
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 

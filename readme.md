@@ -12,9 +12,12 @@ python fewshot_main.py
     less parameters and other robust
 
 ## performance
-    10seq 10000step 300dim minum100shot
+    30seq 10000step 300dim minum100shot
     embeeding +cosine  0.54   
-    embedding+ attn BiLSTM + cosine 0.66
+    embedding+ [bi]GRU + cosine 0.59/0.61
+    embedding+ [bi]LSTM + cosine 0.63/0.61
+    embedding+ attn BiGRU + cosine 0.77
+    embedding+ attn BiLSTM + cosine 0.76
     embedding+ attn BiLSTM + concat not converge
     bert... tokenize in task_generator
 
