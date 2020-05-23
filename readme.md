@@ -18,6 +18,7 @@ python fewshot_main.py
     embedding+ [bi]LSTM + cosine 0.63/0.61
     embedding+ attn BiGRU + cosine 0.77
     embedding+ attn BiLSTM + cosine 0.76
+    embedding+ attn BiGRU + cosine + data arguementation 0.79
     embedding+ attn BiLSTM + concat not converge
     bert... tokenize in task_generator
 

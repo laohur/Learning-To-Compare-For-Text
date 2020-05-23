@@ -230,7 +230,51 @@ def json_dict(path):
             labels[line] = len(labels)
     print(len(labels))
 
+def arguement(doc,vocab,freq=None,tokenize=list):
+    # insert del replace swap
+    # line -line
+    doc1=[]
+    for line in doc:
+        # tokens=tokenize(line)
+        length=len(line)
+        if length<=0:
+            continue
+        random_words=random.sample(vocab,2)
+        ex_place=np.random.randint(0,length+1,1)
+        in_place=np.random.randint(0,length,4)
 
+        ## insert
+        pos=ex_place[0]
+        word=random_words[0]
+        if pos>=length:
+            l1=line+word
+        else:
+            l1=line[:pos]+word+line[pos:]
+
+        pos=in_place[0]
+        if pos>=length-1:
+            l2=line[:pos]
+        else:
+            l2=line[:pos]+line[pos+1:]
+
+        pos=in_place[1]
+        word=random_words[1]
+        if pos>=length-1:
+            l3=line[:-1]+word
+        else:
+            l3=line[:pos]+word+line[pos+1:]
+
+        i,j=in_place[2],in_place[3]
+        if i>j:
+            i,j=j,i
+        if j+1>=length:
+            l4 = line[0:i] + line[j] + line[i + 1:j] + line[i]
+        else:
+            l4=line[0:i]+line[j]+line[i+1:j]+line[i]+line[j+1:]
+        doc1+=[line,l1,l2,l3,l4]
+        # doc1+=[line,l2,l3,l4]
+        # print(line,doc1)
+    return doc1
 def genData(path, outpath):
     f = open(path, "r", encoding="utf-8")
     # doc = open(path, "r", encoding="utf-8").read().splitlines()
