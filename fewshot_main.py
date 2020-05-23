@@ -46,7 +46,6 @@ def main():
     print("start training...")
     best_accuracy=0
     for episode in range(config["EPISODE"]):
-        t0=time()
         feature_encoder.train()
         relation_network.train()
         feature_encoder_scheduler.step(episode)
@@ -61,6 +60,7 @@ def main():
 
         if (episode + 1) % 100 == 0:
             print("episode:", episode + 1, "loss", loss, "cost", time() - t0)
+            t0=time()
         # if (episode ) % (10 * config["TEST_EPISODE"]) == 0:
         #     print(' data arguement episode:',episode)
             train_data_argm={}
